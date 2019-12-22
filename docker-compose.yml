@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  web:
+    restart: always
+    build: ./dockerfiles
+    tty: true
+    expose:
+      - '8000'
+    links:
+      - postgres:postgres
+    volumes:
+      - ./web:/usr/src/web
+      - ./web/static:/usr/src/web/static
+    environment:
+      DEBUG: 'true'
+#    command: /usr/local/bin/gunicorn /usr/src/web/app.wsgi -b 0.0.0.0:8000
+  nginx:
+    restart: always
+    build: ./dockerfiles/nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./web/static:/usr/src/web/static
+    links:
+      - web:web
+
+  postgres:
+    restart: always
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+
+volumes:
+  pgdata:
