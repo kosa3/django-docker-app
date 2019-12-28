@@ -2,7 +2,6 @@
 
 ```bash
 $ docker-compose up -d
-$ docker-compose exec web bash -c "cd /usr/src/web && /usr/local/bin/gunicorn app.wsgi -b 0.0.0.0:8000"
 ```
 
 
