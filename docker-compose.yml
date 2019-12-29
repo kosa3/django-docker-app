@@ -15,6 +15,18 @@ services:
     environment:
       DEBUG: 'true'
     command: bash -c "cd /usr/src/backend && /usr/local/bin/gunicorn app.wsgi -b 0.0.0.0:8000"
+
+  frontend:
+    build: ./dockerfiles/frontend
+    tty: true
+    ports:
+      - 3000:3000
+    volumes:
+      - ./frontend:/usr/src/frontend
+    command: sh -c "cd /usr/src/frontend && yarn run serve --port 3000"
+    links:
+      - backend:backend
+
   nginx:
     restart: always
     build: ./dockerfiles/nginx
@@ -24,6 +36,7 @@ services:
       - ./backend/static:/usr/src/backend/static
     links:
       - backend:backend
+      - frontend:frontend
 
   postgres:
     restart: always
